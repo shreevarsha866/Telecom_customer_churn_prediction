@@ -1,124 +1,314 @@
-Predict which telecom customers are about to leave — a full end-to-end pipeline from SQL ETL to Python ML to Power BI dashboard that turns churn risk into actionable retention strategy.
+# 📊 Telecom Customer Churn Prediction
 
-Problem Statement In telecom, acquiring a new customer costs 5 to 10 times more than retaining one. With a 26.54% churn rate across 7,043 customers, identifying at-risk customers before they leave is a critical business need. This project delivers a complete predictive solution from raw data ingestion to stakeholder-ready dashboards.
+Predict which telecom customers are about to leave — an end-to-end analytics pipeline from **SQL ETL → Python Machine Learning → FastAPI Inference API → Docker → Power BI dashboard** that transforms churn risk into actionable retention strategy.
 
-What This Project Does
+---
 
-SQL Server ETL pipeline — stages, transforms, and curates raw CSV data for analysis
-Exploratory Data Analysis — uncovers churn drivers across contract type, tenure, and payment method
-ML models trained and compared — Logistic Regression vs Random Forest with hyperparameter tuning
-Interactive Power BI dashboard — KPI cards, geographic churn map, and revenue analysis 5.Saved model artifacts — .pkl files ready for deployment or inference on new customers
-Project Structure
+## 🚀 Business Problem
 
-image
-Stage 1 — SQL Server ETL Pipeline
+In telecom, acquiring a new customer costs **5–10x more** than retaining one.
 
-Raw data was processed through a structured ETL pipeline before any ML work.
+* Dataset: **7,043 customers**
+* Churn rate: **26.54%**
+* Objective: Identify high-risk customers early and support data-driven retention campaigns.
 
-CSV File → Staging Table → Transformation → Final Table → Analytics Views
+This project delivers a complete predictive system — from raw CSV ingestion to deployable ML inference and stakeholder-ready dashboards.
 
-Steps performed in SQL Server (SSMS):
+---
 
-Created staging and final schema tables
-Loaded raw CSV via flat file import
-Applied data transformations and quality checks
-Built analytical views for churn rate by contract type
-Output: clean, analysis-ready dataset passed into Python
-Stage 2 — Exploratory Data Analysis:
+# 🏗️ End-to-End Architecture
 
-Dataset: 7,043 customers.
-Churn rate: 26.54%.
-Moderate class imbalance — ROC-AUC prioritized over accuracy.
-Key Finding Insight:
+```
+CSV Data
+   ↓
+SQL Server ETL (Staging → Transform → Final Table → Views)
+   ↓
+Python EDA + Feature Engineering
+   ↓
+ML Model Training & Tuning
+   ↓
+Model Persistence (Joblib)
+   ↓
+FastAPI Inference Service
+   ↓
+Docker Containerization
+   ↓
+Power BI Business Dashboard
+```
 
-Contract type Month-to-Month customers churn far more than 1-year or 2-year holders
-TenureChurned customers have significantly lower average tenurePayment method Electronic check users churn at the highest rate
-Monthly charges Churned avg $75/month vs Stayed avg $63/month
-Senior citizensAround 16% of base — distinct behavioral segment
-Stage 3 — Machine Learning Pipeline: - Preprocessing Steps
+---
 
-Step Method Target encoding Churn: Yes = 1, No = 0
-Dropped columncustomerID (not predictive)
-TotalCharges fixConverted to numeric, 11 NaN rows dropped
-Categorical encodingpd.get_dummies() with drop_first=True
-Feature scaling StandardScaler — fit on train, transform on testTrain/test split80/20, random_state=42, stratify=y
-Models Trained:
+# 🗂️ Project Structure
 
-1. Logistic Regression
+```
+telecom-customer-churn-prediction/
+│
+├── Dataset/
+├── ETL_pipeline/
+├── models/
+│   ├── LogisticRegression.pkl
+│   ├── RandomForestClassifier.pkl
+│   └── scaler.pkl
+│
+├── notebook/
+├── powerBI/
+├── customer-churn-api/
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
+│
+└── README.md
+```
+
+---
+
+# 🧱 Stage 1 — SQL Server ETL Pipeline
+
+**Pipeline Flow:**
+
+```
+Raw CSV → Staging Table → Transformations → Final Table → Analytics Views
+```
+
+### Implemented in SQL Server (SSMS):
+
+* Created staging & final schema tables
+* Imported CSV via flat file import
+* Applied:
+
+  * Data type corrections
+  * NULL handling
+  * Data validation checks
+* Built analytical views:
+
+  * Churn by contract type
+  * Revenue aggregation
+  * Tenure analysis
+
+**Output:** Clean, structured dataset passed into Python for modeling.
+
+---
+
+# 🔎 Stage 2 — Exploratory Data Analysis
+
+### Dataset Summary
+
+| Metric              | Value    |
+| ------------------- | -------- |
+| Customers           | 7,043    |
+| Churn Rate          | 26.54%   |
+| Class Imbalance     | Moderate |
+| Optimization Metric | ROC-AUC  |
+
+### Key Insights
+
+* 📌 Month-to-Month contracts churn significantly more
+* 📌 Churned customers have lower average tenure
+* 📌 Electronic check users churn at highest rate
+* 📌 Churned avg monthly charge: **$75**
+* 📌 Retained avg monthly charge: **$63**
+* 📌 Senior citizens (~16%) show distinct churn behavior
+
+---
+
+# 🤖 Stage 3 — Machine Learning Pipeline
+
+## Preprocessing
+
+| Step             | Method                                |
+| ---------------- | ------------------------------------- |
+| Target Encoding  | Yes = 1, No = 0                       |
+| Dropped          | customerID                            |
+| TotalCharges Fix | Converted to numeric, 11 NaNs removed |
+| Encoding         | pd.get_dummies(drop_first=True)       |
+| Scaling          | StandardScaler                        |
+| Split            | 80/20 stratified split                |
+
+---
+
+## Models Trained
+
+### 1️⃣ Logistic Regression (Baseline)
+
+```python
 LogisticRegression(max_iter=1000)
+```
 
-2. Random Forest
-RandomForestClassifier(n_estimators=300, random_state=42, class_weight='balanced')
+### 2️⃣ Random Forest
 
-3. Hyperparameter Tuning
-GridSearchCV on Logistic Regression — 5-fold CV, scoring = roc_auc: pythonparam_grid = { 'C': [0.01, 0.1, 0.5, 1, 5, 10], 'penalty': ['l2'] }
+```python
+RandomForestClassifier(
+    n_estimators=300,
+    random_state=42,
+    class_weight='balanced'
+)
+```
 
-Model Comparison
+### 3️⃣ Hyperparameter Tuning
 
-ModelROC-AUC Notes Logistic Regression (baseline)0.835 Strong interpretable baselineRandom Forest0.819Higher complexity, lower AUCLogistic Regression (tuned)0.835 Final model selected
-Final model: Tuned Logistic Regression. Decision threshold adjusted to 0.4 to improve churn recall to 57%.
-Saved Model Artifacts Three files saved with joblib:
+```python
+param_grid = {
+    'C': [0.01, 0.1, 0.5, 1, 5, 10],
+    'penalty': ['l2']
+}
+```
 
-LogisticRegression.pkl — FINAL prediction model
-RandomForestClassifier.pkl — feature importance reference
-scaler.pkl — StandardScaler (required for Logistic Regression)
-**Load and predict on new data: **
+* 5-fold cross-validation
+* Scoring metric: ROC-AUC
 
-pythonimport joblib model = joblib.load("LogisticRegression.pkl") scaler = joblib.load("scaler.pkl")
+---
 
-X_scaled = scaler.transform(X_new) churn_prob = model.predict_proba(X_scaled)[:, 1] churn_flag = (churn_prob > 0.4).astype(int)
+## 📈 Model Comparison
 
-Stage 4 — Power BI Dashboard File: Report_BI.pbix — Open with Power BI Desktop (free)
+| Model                     | ROC-AUC   | Notes             |
+| ------------------------- | --------- | ----------------- |
+| Logistic Regression       | 0.835     | Strong baseline   |
+| Random Forest             | 0.819     | Higher complexity |
+| Tuned Logistic Regression | **0.835** | Final model       |
 
-KPI Cards
-MetricValueTotal Customers 7,043
-Total Revenue$21.37M
-Total Refund$13.82K
-Average Charges$2.28K
-Total Tenure (months)228K
-Churn Rate26.54%
-Dashboard Visuals
-In Visual What It Shows:
+### 🎯 Final Model: Tuned Logistic Regression
 
-Revenue by Contract (Donut)Month-to-Month $6.16M, One Year $6.17M, Two Year $9.04M
-Churn Category (Bar)Competitor 841, Dissatisfaction 321, Attitude 314, Price 211, Other 182
-Customers by Gender (Pie)Male 50.48%, Female 49.52%
-Customers and Revenue by Age Above-60 is the largest customer and revenue segment
-Avg Monthly Charges by Status Churned $75, Stayed $63, Joined $44
-Geographic MapRevenue and churn rate across California cities
-Interactive Filters: Streaming TV, Streaming Music, Streaming Movie, Unlimited Data, Internet Service, Internet Type (Cable / DSL / Fiber Optic), Premium Support
-Tech Stack -LayerToolsETLSQL Server, SSMS
+Decision threshold adjusted to **0.4** to improve churn recall to **57%**.
 
-CSV Flat File Import Language Python — Google Colab / Jupyter
-Data Wrangling
-Pandas, NumPy
-Visualization
-Matplotlib, Seaborn
-Machine Learning
-Scikit-learn — LogisticRegression, RandomForestClassifier, GridSearchCV
-Model Persistence Joblib
-BI DashboardPower BI Desktop
-Getting Started
+---
 
-Clone the repository bashgit clone https://github.com/shreevarsha866/Telecom-customer-churn-prediction.git cd Telecom-customer-churn-prediction
-Install dependencies bashpip install pandas numpy matplotlib seaborn scikit-learn joblib
-Run the notebook Open Telcom_Customer_churn.ipynb in Jupyter or Google Colab. Place WA_Fn-UseC_-Telco-Customer-Churn.csv at /content/ for Colab or update the path in Cell 1.
-Predict on new customers
-pythonimport joblib model = joblib.load("LogisticRegression.pkl") scaler = joblib.load("scaler.pkl") X_scaled = scaler.transform(X_new) churn_prob = model.predict_proba(X_scaled)[:, 1] at_risk = (churn_prob > 0.4).astype(int)
+# 💾 Model Persistence (Joblib)
 
-5. Open the Power BI dashboard
+Saved artifacts:
 
-Open Report_BI.pbix in Power BI Desktop and explore with the interactive filters.
-Final Results
+* `LogisticRegression.pkl`
+* `RandomForestClassifier.pkl`
+* `scaler.pkl`
 
-Metric Value Final Model Logistic Regression (GridSearchCV tuned)
-Accuracy 80% ROC-AUC Score 0.835 Churn Recall (threshold = 0.4)57%
-Dataset Size 7,043 customersChurn Rate26.54%
-Business Recommendations
+### Load & Predict
 
-Competitor churn is the top reason (841 cases) — launch targeted competitive pricing campaigns immediately
-Month-to-month customers are highest risk — incentivize upgrades to annual contracts early in tenure
-High-charge new customers are most vulnerable — churned customers pay $12/month more on average
-Above-60 age group generates the most revenue — prioritize premium support offerings for this segment
-Use a threshold of 0.4 instead of 0.5 when scoring customers — improves recall by flagging more true churners
-License This project is licensed under the MIT License.
+```python
+import joblib
+
+model = joblib.load("LogisticRegression.pkl")
+scaler = joblib.load("scaler.pkl")
+
+X_scaled = scaler.transform(X_new)
+churn_prob = model.predict_proba(X_scaled)[:, 1]
+churn_flag = (churn_prob > 0.4).astype(int)
+```
+
+---
+
+# 🚀 Stage 4 — FastAPI Inference Service
+
+A production-ready API was built to serve real-time churn predictions.
+
+### Run locally
+
+```bash
+uvicorn app:app --reload
+```
+
+Swagger UI:
+
+```
+http://localhost:8000/docs
+```
+
+---
+
+# 🐳 Docker Containerization
+
+The inference service is containerized for reproducible deployment.
+
+### Build image
+
+```bash
+docker build -t churn-api ./customer-churn-api
+```
+
+### Run container
+
+```bash
+docker run -p 8000:8000 churn-api
+```
+
+---
+
+# 📊 Stage 5 — Power BI Dashboard
+
+File: `Report_BI.pbix`
+
+### KPI Summary
+
+| Metric          | Value       |
+| --------------- | ----------- |
+| Total Customers | 7,043       |
+| Total Revenue   | $21.37M     |
+| Churn Rate      | 26.54%      |
+| Total Tenure    | 228K months |
+| Avg Charges     | $2.28K      |
+
+### Dashboard Features
+
+* Revenue by contract type
+* Churn reason breakdown
+* Gender distribution
+* Revenue by age segment
+* Geographic churn heatmap
+* Interactive service filters
+
+---
+
+# 🛠️ Tech Stack
+
+| Layer             | Tools               |
+| ----------------- | ------------------- |
+| ETL               | SQL Server, SSMS    |
+| Data Wrangling    | Pandas, NumPy       |
+| Visualization     | Matplotlib, Seaborn |
+| ML                | Scikit-learn        |
+| Model Persistence | Joblib              |
+| API               | FastAPI             |
+| Containerization  | Docker              |
+| BI                | Power BI            |
+
+---
+
+# 📊 Final Results
+
+| Metric                       | Value               |
+| ---------------------------- | ------------------- |
+| Final Model                  | Logistic Regression |
+| ROC-AUC                      | 0.835               |
+| Accuracy                     | 80%                 |
+| Churn Recall (0.4 threshold) | 57%                 |
+| Dataset Size                 | 7,043               |
+| Churn Rate                   | 26.54%              |
+
+---
+
+# 💡 Business Recommendations
+
+* Launch competitor-targeted retention campaigns (841 churn cases)
+* Incentivize Month-to-Month customers to upgrade early
+* Monitor high monthly charge new customers closely
+* Offer premium support for 60+ age segment
+* Use **0.4 threshold** for operational churn scoring
+
+---
+
+# 📦 Getting Started
+
+```bash
+git clone https://github.com/shreevarsha866/telecom-customer-churn-prediction.git
+cd telecom-customer-churn-prediction
+pip install -r requirements.txt
+```
+
+---
+
+# 📄 License
+
+MIT License
+
+---
+
+---
+

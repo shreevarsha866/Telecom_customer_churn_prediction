@@ -251,7 +251,7 @@ File: `Report_BI.pbix`
 | Total Tenure    | 228K months |
 | Avg Charges     | $2.28K      |
 
-👉 **[Download powerbi Proof (PDF)](Report_BI.pdf)**
+👉[Download powerbi Proof](https://github.com/shreevarsha866/Telecom_customer_churn_prediction/blob/main/powerbi/Report_BI.pdf)
 ---
 
 # 🛠️ Tech Stack

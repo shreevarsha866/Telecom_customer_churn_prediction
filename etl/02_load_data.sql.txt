@@ -1,0 +1,6 @@
+-- Data is loaded via SSMS Import Flat File Wizard
+-- Source: customer_churn_ETL.csv
+-- Target: dbo.customer_churn_ETL
+
+SELECT COUNT(*) AS staging_rows
+FROM dbo.customer_churn_ETL;

@@ -1,0 +1,55 @@
+-- Staging table
+CREATE TABLE dbo.customer_churn_ETL (
+    gender NVARCHAR(50),
+    age INT,
+    married BIT,
+    number_of_dependents TINYINT,
+    city NVARCHAR(50),
+    zip_code VARCHAR(10),
+    number_of_referrals TINYINT,
+    tenure_in_months INT,
+    phone_service BIT,
+    avg_monthly_long_distance_charges DECIMAL(18,10),
+    multiple_lines BIT,
+    internet_service BIT,
+    internet_type NVARCHAR(50),
+    avg_monthly_gb_download DECIMAL(18,10),
+    online_security BIT,
+    online_backup BIT,
+    device_protection_plan BIT,
+    premium_tech_support BIT,
+    streaming_tv BIT,
+    streaming_movies BIT,
+    streaming_music BIT,
+    unlimited_data BIT,
+    contract NVARCHAR(50),
+    paperless_billing BIT,
+    payment_method NVARCHAR(50),
+    monthly_charge DECIMAL(18,10),
+    total_charges DECIMAL(18,10),
+    total_refunds FLOAT,
+    total_extra_data_charges TINYINT,
+    total_long_distance_charges DECIMAL(18,10),
+    total_revenue DECIMAL(18,10),
+    customer_status NVARCHAR(50),
+    churn_category NVARCHAR(50),
+    churn_reason NVARCHAR(50)
+);
+GO
+
+-- Final curated table
+CREATE TABLE dbo.customer_churn_final (
+    customer_id INT IDENTITY(1,1) PRIMARY KEY,
+    gender NVARCHAR(50),
+    age INT,
+    city NVARCHAR(50),
+    contract NVARCHAR(50),
+    payment_method NVARCHAR(50),
+    tenure_in_months INT,
+    monthly_charge DECIMAL(18,10),
+    total_charges DECIMAL(18,10),
+    total_revenue DECIMAL(18,10),
+    churn_category NVARCHAR(50),
+    churn_reason NVARCHAR(50)
+);
+GO

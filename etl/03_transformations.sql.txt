@@ -1,0 +1,28 @@
+INSERT INTO dbo.customer_churn_final (
+    gender,
+    age,
+    city,
+    contract,
+    payment_method,
+    tenure_in_months,
+    monthly_charge,
+    total_charges,
+    total_revenue,
+    churn_category,
+    churn_reason
+)
+SELECT
+    gender,
+    age,
+    city,
+    contract,
+    payment_method,
+    tenure_in_months,
+    monthly_charge,
+    total_charges,
+    total_revenue,
+    churn_category,
+    churn_reason
+FROM dbo.customer_churn_ETL
+WHERE customer_status IS NOT NULL;
+GO

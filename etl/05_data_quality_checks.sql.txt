@@ -1,0 +1,14 @@
+-- Row count checks
+SELECT COUNT(*) AS staging_rows FROM dbo.customer_churn_ETL;
+SELECT COUNT(*) AS final_rows FROM dbo.customer_churn_final;
+
+-- Null checks
+SELECT COUNT(*) AS null_contracts
+FROM dbo.customer_churn_final
+WHERE contract IS NULL;
+
+-- Revenue sanity check
+SELECT
+    MIN(total_revenue) AS min_revenue,
+    MAX(total_revenue) AS max_revenue
+FROM dbo.customer_churn_final;

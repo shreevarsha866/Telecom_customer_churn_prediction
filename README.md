@@ -114,6 +114,7 @@ After SQL preparation, modeling work was completed in Python.
 * Encoding & scaling
 * Stratified 80/20 train-test split
 
+**[Download Full end to end pipeline code (Google Collab)](Telcom_Customer_churn.ipynb)**
 ---
 
 # 🤖 Stage 3 — Machine Learning Pipeline

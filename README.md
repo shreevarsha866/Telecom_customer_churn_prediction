@@ -1,29 +1,43 @@
-# 📊 Telecom Customer Churn Prediction
+📊 Telecom Customer Churn Prediction
 
-Predict which telecom customers are about to leave — an end-to-end analytics pipeline from **SQL ETL → Python Machine Learning → FastAPI Inference API → Docker → Power BI dashboard** that transforms churn risk into actionable retention strategy.
+Predict which telecom customers are about to leave — an end-to-end analytics pipeline from SQL data structuring → Python Machine Learning → FastAPI Inference API → Docker → Power BI dashboard that transforms churn risk into actionable retention strategy.
 
----
+🚀 Business Problem
 
-## 🚀 Business Problem
+In telecom, acquiring a new customer costs 5–10× more than retaining one.
 
-In telecom, acquiring a new customer costs **5–10x more** than retaining one.
+Dataset: 7,043 customers
 
-* Dataset: **7,043 customers**
-* Churn rate: **26.54%**
-* Objective: Identify high-risk customers early and support data-driven retention campaigns.
+Churn rate: 26.54%
 
-This project delivers a complete predictive system — from raw CSV ingestion to deployable ML inference and stakeholder-ready dashboards.
+Objective: Identify high-risk customers early and support data-driven retention campaigns
 
----
+This project delivers a complete predictive system — from structured data preparation to deployable ML inference and executive dashboards.
 
-# 🏗️ End-to-End Architecture
+📄 API Deployment Proof
 
-```
-CSV Data
+The ML inference service was successfully:
+
+Containerized using Docker
+
+Executed locally with port mapping
+
+Validated via Swagger UI
+
+Tested using cURL
+
+Returned HTTP 200 responses
+
+Produced churn probability output
+
+👉 Download Full Deployment Proof (PDF)
+
+🏗️ End-to-End Architecture
+Raw CSV Data
    ↓
-SQL Server ETL (Staging → Transform → Final Table → Views)
+SQL Server (Table Creation, Loading, Transformation, Views, Data Quality Checks)
    ↓
-Python EDA + Feature Engineering
+Python (Google Colab: Inspection, Cleaning, EDA, Feature Engineering)
    ↓
 ML Model Training & Tuning
    ↓
@@ -34,13 +48,7 @@ FastAPI Inference Service
 Docker Containerization
    ↓
 Power BI Business Dashboard
-```
-
----
-
-# 🗂️ Project Structure
-
-```
+🗂️ Project Structure
 telecom-customer-churn-prediction/
 │
 ├── Dataset/
@@ -57,132 +65,102 @@ telecom-customer-churn-prediction/
 │   ├── Dockerfile
 │   └── requirements.txt
 │
+├── Customer_Churn_API_Deployment_Proof.pdf
 └── README.md
-```
+🧱 Stage 1 — SQL Server Data Preparation
 
----
+SQL Server was used for structured data preparation before modeling.
 
-# 🧱 Stage 1 — SQL Server ETL Pipeline
+Implemented in SQL (SSMS)
 
-**Pipeline Flow:**
+Created staging and final schema tables
 
-```
-Raw CSV → Staging Table → Transformations → Final Table → Analytics Views
-```
+Loaded raw CSV via flat file import
 
-### Implemented in SQL Server (SSMS):
+Applied transformation logic
 
-* Created staging & final schema tables
-* Imported CSV via flat file import
-* Applied:
+Performed data quality checks
 
-  * Data type corrections
-  * NULL handling
-  * Data validation checks
-* Built analytical views:
+NULL validation
 
-  * Churn by contract type
-  * Revenue aggregation
-  * Tenure analysis
+Data type corrections
 
-**Output:** Clean, structured dataset passed into Python for modeling.
+Built analytical views
 
----
+Churn by contract type
 
-# 🔎 Stage 2 — Exploratory Data Analysis
+Revenue aggregation
 
-### Dataset Summary
+Tenure analysis
 
-| Metric              | Value    |
-| ------------------- | -------- |
-| Customers           | 7,043    |
-| Churn Rate          | 26.54%   |
-| Class Imbalance     | Moderate |
-| Optimization Metric | ROC-AUC  |
+Output: Structured, analysis-ready dataset passed to Python for modeling.
 
-### Key Insights
+🔎 Stage 2 — Python (Google Colab)
 
-* 📌 Month-to-Month contracts churn significantly more
-* 📌 Churned customers have lower average tenure
-* 📌 Electronic check users churn at highest rate
-* 📌 Churned avg monthly charge: **$75**
-* 📌 Retained avg monthly charge: **$63**
-* 📌 Senior citizens (~16%) show distinct churn behavior
+After SQL preparation, modeling work was completed in Python.
 
----
+Performed in Python:
 
-# 🤖 Stage 3 — Machine Learning Pipeline
+Data inspection and validation
 
-## Preprocessing
+Additional cleaning
 
-| Step             | Method                                |
-| ---------------- | ------------------------------------- |
-| Target Encoding  | Yes = 1, No = 0                       |
-| Dropped          | customerID                            |
-| TotalCharges Fix | Converted to numeric, 11 NaNs removed |
-| Encoding         | pd.get_dummies(drop_first=True)       |
-| Scaling          | StandardScaler                        |
-| Split            | 80/20 stratified split                |
+Exploratory Data Analysis (EDA)
 
----
+Feature engineering
 
-## Models Trained
+Encoding & scaling
 
-### 1️⃣ Logistic Regression (Baseline)
+Stratified 80/20 train-test split
 
-```python
+🤖 Stage 3 — Machine Learning Pipeline
+Preprocessing
+Step	Method
+Target Encoding	Yes = 1, No = 0
+Dropped	customerID
+TotalCharges Fix	Converted to numeric, 11 NaNs removed
+Encoding	pd.get_dummies(drop_first=True)
+Scaling	StandardScaler
+Split	80/20 stratified
+Models Trained
+Logistic Regression (Baseline)
 LogisticRegression(max_iter=1000)
-```
-
-### 2️⃣ Random Forest
-
-```python
+Random Forest
 RandomForestClassifier(
     n_estimators=300,
     random_state=42,
     class_weight='balanced'
 )
-```
-
-### 3️⃣ Hyperparameter Tuning
-
-```python
+Hyperparameter Tuning
 param_grid = {
     'C': [0.01, 0.1, 0.5, 1, 5, 10],
     'penalty': ['l2']
 }
-```
 
-* 5-fold cross-validation
-* Scoring metric: ROC-AUC
+5-fold cross-validation
 
----
+Scoring metric: ROC-AUC
 
-## 📈 Model Comparison
+📈 Model Comparison
+Model	ROC-AUC	Notes
+Logistic Regression	0.835	Strong baseline
+Random Forest	0.819	Higher complexity
+Tuned Logistic Regression	0.835	Final model
+🎯 Final Model: Tuned Logistic Regression
 
-| Model                     | ROC-AUC   | Notes             |
-| ------------------------- | --------- | ----------------- |
-| Logistic Regression       | 0.835     | Strong baseline   |
-| Random Forest             | 0.819     | Higher complexity |
-| Tuned Logistic Regression | **0.835** | Final model       |
+Decision threshold adjusted to 0.4 to improve churn recall to 57%.
 
-### 🎯 Final Model: Tuned Logistic Regression
-
-Decision threshold adjusted to **0.4** to improve churn recall to **57%**.
-
----
-
-# 💾 Model Persistence (Joblib)
+💾 Model Persistence (Joblib)
 
 Saved artifacts:
 
-* `LogisticRegression.pkl`
-* `RandomForestClassifier.pkl`
-* `scaler.pkl`
+LogisticRegression.pkl
 
-### Load & Predict
+RandomForestClassifier.pkl
 
-```python
+scaler.pkl
+
+Load & Predict
 import joblib
 
 model = joblib.load("LogisticRegression.pkl")
@@ -191,121 +169,67 @@ scaler = joblib.load("scaler.pkl")
 X_scaled = scaler.transform(X_new)
 churn_prob = model.predict_proba(X_scaled)[:, 1]
 churn_flag = (churn_prob > 0.4).astype(int)
-```
-
----
-
-# 🚀 Stage 4 — FastAPI Inference Service
+🚀 Stage 4 — FastAPI Inference Service
 
 A production-ready API was built to serve real-time churn predictions.
 
-### Run locally
-
-```bash
+Run locally
 uvicorn app:app --reload
-```
 
 Swagger UI:
 
-```
 http://localhost:8000/docs
-```
-
----
-
-# 🐳 Docker Containerization
-
-The inference service is containerized for reproducible deployment.
-
-### Build image
-
-```bash
+🐳 Docker Containerization
+Build Image
 docker build -t churn-api ./customer-churn-api
-```
-
-### Run container
-
-```bash
+Run Container
 docker run -p 8000:8000 churn-api
-```
 
----
+Container execution and API validation documented in the Deployment Proof PDF.
 
-# 📊 Stage 5 — Power BI Dashboard
+📊 Stage 5 — Power BI Dashboard
 
-File: `Report_BI.pbix`
+File: Report_BI.pbix
 
-### KPI Summary
+KPI Summary
+Metric	Value
+Total Customers	7,043
+Total Revenue	$21.37M
+Churn Rate	26.54%
+Total Tenure	228K months
+Avg Charges	$2.28K
+🛠️ Tech Stack
+Layer	Tools
+Data Preparation	SQL Server, SSMS
+Data Processing	Pandas, NumPy
+ML	Scikit-learn
+API	FastAPI
+Containerization	Docker
+Model Persistence	Joblib
+BI	Power BI
+📊 Final Results
+Metric	Value
+ROC-AUC	0.835
+Accuracy	80%
+Recall (0.4 threshold)	57%
+Dataset Size	7,043
+Churn Rate	26.54%
+💡 Business Recommendations
 
-| Metric          | Value       |
-| --------------- | ----------- |
-| Total Customers | 7,043       |
-| Total Revenue   | $21.37M     |
-| Churn Rate      | 26.54%      |
-| Total Tenure    | 228K months |
-| Avg Charges     | $2.28K      |
+Launch competitor-targeted retention campaigns
 
-### Dashboard Features
+Incentivize Month-to-Month upgrades
 
-* Revenue by contract type
-* Churn reason breakdown
-* Gender distribution
-* Revenue by age segment
-* Geographic churn heatmap
-* Interactive service filters
+Monitor high monthly charge new customers
 
----
+Prioritize high-revenue senior segment
 
-# 🛠️ Tech Stack
+Deploy scoring with threshold = 0.4
 
-| Layer             | Tools               |
-| ----------------- | ------------------- |
-| ETL               | SQL Server, SSMS    |
-| Data Wrangling    | Pandas, NumPy       |
-| Visualization     | Matplotlib, Seaborn |
-| ML                | Scikit-learn        |
-| Model Persistence | Joblib              |
-| API               | FastAPI             |
-| Containerization  | Docker              |
-| BI                | Power BI            |
-
----
-
-# 📊 Final Results
-
-| Metric                       | Value               |
-| ---------------------------- | ------------------- |
-| Final Model                  | Logistic Regression |
-| ROC-AUC                      | 0.835               |
-| Accuracy                     | 80%                 |
-| Churn Recall (0.4 threshold) | 57%                 |
-| Dataset Size                 | 7,043               |
-| Churn Rate                   | 26.54%              |
-
----
-
-# 💡 Business Recommendations
-
-* Launch competitor-targeted retention campaigns (841 churn cases)
-* Incentivize Month-to-Month customers to upgrade early
-* Monitor high monthly charge new customers closely
-* Offer premium support for 60+ age segment
-* Use **0.4 threshold** for operational churn scoring
-
----
-
-# 📦 Getting Started
-
-```bash
+📦 Getting Started
 git clone https://github.com/shreevarsha866/telecom-customer-churn-prediction.git
 cd telecom-customer-churn-prediction
 pip install -r requirements.txt
-```
-
----
-
-# 📄 License
+📄 License
 
 MIT License
----
-

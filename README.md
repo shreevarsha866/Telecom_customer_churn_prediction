@@ -27,7 +27,7 @@ The ML inference service was successfully:
 * Returned HTTP 200 responses
 * Produced churn probability output
 
-👉 **[Download Full Deployment Proof (PDF)](Customer_Churn_API_Deployment_Proof.pdf)**
+👉[Download Deployment Proof](https://github.com/shreevarsha866/Telecom_customer_churn_prediction/blob/main/Customer%20Churn%20Prediction%20-%20API%20%20Deployment%20Proof.pdf)
 
 ---
 
